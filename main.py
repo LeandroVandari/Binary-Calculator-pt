@@ -1,16 +1,36 @@
 #Importa os módulos necessários para o programa
 from termcolor import colored, cprint
+import tkinter
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter.messagebox import askyesno
+from tkinter.messagebox import *
 import os
 
 texto_operacao = []
 texto_resultado = []
+
+def converter_bcd(numero, metodo):
+    lista_numero = []
+    for item in numero:
+        lista_numero.append(numero)
+    if len(lista_numero) < 
+    if metodo == "ambos":
+        metodo = ["double dabble", "portoes"]
+    else:
+        metodo = [metodo]
+    if "portoes" in metodo:
+        cprint("Para converter o número binário em BCD utilizando portões de lógica, utilizam-se os mapas de Karnaugh para criar o circuito que fará a conversão.", "blue")
+        cprint("(Se você quiser criar circuitos de lógica a partir de tabelas ou mapas de Karnaugh, acesse: https://electricalworkbook.com/binary-to-bcd-code-converter-circuit/")
+        print("\nPara o primeiro dígito do BCD, o processo é o seguinte:")
+        
+        
+    if "double dabble" in metodo:
+        pass
     
 #Define a função somar, que faz a soma de dois números
-def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, texto_operacao, digito_decimal):
+def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, texto_operacao, digito_decimal, binario, metodo):
     #Define o "dicionário" para converter de binário para decimal
     decimal = {
         "1":"1",
@@ -52,7 +72,7 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
 
 
     if sobra == "Primeira soma":
-        if (binary.get() == False):
+        if (binario == False):
             cprint("Para fazer uma adição, precisamos primeiro converter cada um dos dígitos em binário. Isto é feito através de uma espécie de tabela armazenada na calculadora.", "red")
             
             cprint("O primeiro número, em binário, é {0}. O segundo, é {1}.\n".format(primeiro_binario[::-1], segundo_binario[::-1]), "red")
@@ -91,7 +111,7 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
             cprint(item, "blue")
         cprint("   " + " " * (len(lista_digito_1) - 1) + resultado, "blue")
         if len(lista_digito_1) > 1 or len(lista_digito_2) > 1:
-            somar(primeiro_binario, segundo_binario, sobra, 1, texto_resultado, texto_operacao, digito_decimal)
+            somar(primeiro_binario, segundo_binario, sobra, 1, texto_resultado, texto_operacao, digito_decimal, binario, metodo)
         else:
             if sobra == "1":
                 texto_resultado = texto_resultado[::-1]
@@ -101,7 +121,6 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
             cprint("Como não há mais nenhum 'bit' para somar, o resultado deste dígito é {0}, que, em decimal, é {1}.".format(txt, decimal.get(txt)), "red")
         
     else:
-        cprint(lista_digito_1, "blue")
         lista_digito_1 = lista_digito_1[::-1]
         lista_digito_2 = lista_digito_2[::-1]
         bit1 = lista_digito_1[ordem]
@@ -119,7 +138,6 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
             print("Como isso não é verdade, o operador 'devolve' o valor 0.")
         cprint("\nAgora, utilizamos mais um operador XOR para verificar se a sobra OU (apenas um dos dois números) tem o valor 1.", "red")
         print("Se sim, isto quer dizer que apenas um dos três ou os três valores são 1, o que implica um resultado de 1.")
-        #PROBLEMA AQUI (9 + 3 segunda casa não funcionando)
         if (XOR == False and sobra == "1") or (XOR == True and sobra != "1"):
             print("Como isto é verdade, o resultado é 1.")
             resultado = "1"
@@ -145,9 +163,7 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
         txt = "".join(txt)
         cprint("   " + " " * (len(lista_digito_1) - len(texto_resultado)) + txt, "blue")
         if ordem + 1 < len(lista_digito_1):
-            cprint(ordem, "red")
-            cprint(lista_digito_1, "red")
-            somar(primeiro_binario, segundo_binario, sobra, ordem + 1, texto_resultado, texto_operacao, digito_decimal)
+            somar(primeiro_binario, segundo_binario, sobra, ordem + 1, texto_resultado, texto_operacao, digito_decimal, binario, metodo)
         else:
             if sobra == "1":
                 texto_resultado = texto_resultado[::-1]
@@ -155,8 +171,10 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
                 texto_resultado = texto_resultado[::-1]
             result = "".join(texto_resultado)
             print("O resultado da soma deste número é {}.".format(result))
-            cprint("Agora convertemos este resultado de volta ao decimal. {0} em decimal, é {1}.".format(result, decimal.get(result)), "red")
-            #CONTINUAR AQUI
+            cprint("Antes de converter o dígito de volta a decimal, é preciso convertê-lo a BCD (Binary Coded Decimal, ou, em tradução livre, Decimal Codificado em Binário), e então para decimal.", "red")
+            converter_bcd(result, metodo)
+            #CONTINUAR AQUI: CONVERSÃO PARA DCB - DOUBLE DABBLE: https://www.realdigital.org/doc/6dae6583570fd816d1d675b93578203d#binary-to-bcd
+            #OUTRO METODO: KMAPS: https://electricalworkbook.com/binary-to-bcd-code-converter-circuit/
                 
             
 
@@ -207,7 +225,7 @@ def convert_to_binary(num):
 #Caso a opção "Entrada em binário" esteja selecionada,
 #Verifica se o número inserido está em binário. Depois, "chama" a função para converter em binário.
 #Dependendo do operador escolhido, chama uma das funções para calcular.
-def check_valid():
+def check_valid(binario, metodo):
     #Verifica se o que foi escrito é um número  - DESNECESSÁRIO
     tentar_2 = True
     try:
@@ -227,7 +245,7 @@ def check_valid():
 
     #Se a opção "Entrada em binário" não estiver selecionada, converte os números para o binário.
     if (tentar_2 == True):
-        if (binary.get() == False):
+        if (binario== False):
             primeiro_decimal = primeiro_caixa
             segundo_decimal = segundo_caixa
             primeiro_binario = convert_to_binary(primeiro_caixa)
@@ -257,7 +275,8 @@ def check_valid():
             if choice.get() == "+":
                 primeiro_binario = primeiro_binario[::-1]
                 segundo_binario = segundo_binario[::-1]
-                somar(primeiro_binario, segundo_binario, "Primeira soma", 0, texto_resultado, texto_operacao, 0)
+                root.destroy()
+                somar(primeiro_binario, segundo_binario, "Primeira soma", 0, texto_resultado, texto_operacao, 0, binario, metodo)
             elif choice.get() == "−":
                 pass
             elif choice.get() == "×":
@@ -292,15 +311,39 @@ caixa2.bind("<FocusIn>", lambda args : clear_box("caixa2"))
 #Cria a opção "Entrada em binário", que pode ser selecionada.
 binary = BooleanVar(value=False)
 check1 = ttk.Checkbutton(root, text='Entrada em binário', variable=binary, onvalue=True, offvalue=False)
-check1.place(anchor='center', relx = 0.15, rely = 0.5)
+check1.place(anchor='w', relx = 0.01, rely=0.77)
+
+#Cria o texto da escolha de método de conversão de binário para DCB. https://electricalworkbook.com/binary-to-bcd-code-converter-circuit/
+texto = ttk.Label(root, text = "Método de conversão de binário para BCD:", font='Helvetica 14 bold')
+texto.place(anchor='w', relx = 0.01, rely = 0.38)
+
+#Cria a opção do método double dabble para converter de binário em BCD.
+metodo = StringVar()
+double_dabble = ttk.Radiobutton(root, text='Double dabble', variable=metodo, value="double dabble")
+double_dabble.place(anchor='w', relx = 0.01, rely = 0.5)
+
+#Cria a opção do método por portões de lógica para a conversão de binário em BCD.
+portoes = ttk.Radiobutton(root, text='Portões de lógica', variable=metodo, value='portoes')
+portoes.place(anchor='w', relx=0.25, rely=0.5)
+metodo.set('portoes')
+
+
+#Cria a opção de utilizar ambos métodos
+ambos = ttk.Radiobutton(root, text='Ambos', variable=metodo, value='ambos')
+ambos.place(anchor='w', relx=0.55, rely=0.5)
+
+#Cria o texto de outras opções
+outras_opcoes = ttk.Label(root, text = "Outras opções:", font='Helvetica 14 bold')
+outras_opcoes.place(anchor='w', relx = 0.01, rely = 0.65)
 
 #Cria a caixa de seleção de operações.
 operations = ['+', '−', '×', '÷']
 choice = ttk.Combobox(root, values = operations)
 choice.place(anchor = 'center', relx = 0.5, rely = 0.2)
 choice.configure(width = 2)
+choice.set('+')
 
 #Cria o botão "Calcular".
-calculate = ttk.Button(root, text = 'Calcular', command = lambda : check_valid())
+calculate = ttk.Button(root, text = 'Calcular', command = lambda : check_valid(binary.get(), metodo.get()))
 calculate.place(anchor='center', relx=0.5, rely=0.9)
 root.mainloop()
