@@ -53,7 +53,7 @@ def converter_bcd(numero, metodo):
 		print("Utilizamos um operador AND para verificar se o terceiro número ({2}) e o quarto número ({3}) são 1.".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
 		cprint("\nA última possibilidade, é:\n", "red")
 		print("Utilizamos um operador NOT para inverter o quarto dígito ({3}).\n\nUtilizamos um operador and para verificar se o primeiro dígito ({0}) e o oposto do quarto dígito são 1.\n".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
-		print("Agora utilizamos dois operadores OR, o primeiro para verificar se a primeira ou a segunda possibilidade são verdadeiras, e o segundo para verificar se o operador OR anterior ou a terceira possibilidade são verdadeiras.\n\nDesta forma, se pelo menos uma das possibilidades for verdadeira, o terceiro dígito será 1.")
+		print("\nAgora utilizamos dois operadores OR, o primeiro para verificar se a primeira ou a segunda possibilidade são verdadeiras, e o segundo para verificar se o operador OR anterior ou a terceira possibilidade são verdadeiras.\n\nDesta forma, se pelo menos uma das possibilidades for verdadeira, o terceiro dígito será 1.")
 		if (not lista_numero[1] == "1" and lista_numero[2] == "1") or (lista_numero[2] == "1" and lista_numero[3] == "1") or (lista_numero[0] == "1" and not lista_numero[3] == "1"):
 			lista_resultado.append("1")
 		else:
@@ -66,7 +66,7 @@ def converter_bcd(numero, metodo):
 		cprint("\nOutra possibilidade, é a seguinte:\n", "red")
 		print("Utilizamos um operador AND para verificar se o primeiro dígito ({0}) e o segundo dígito ({1}) são 1.\n\nUtilizamos um operador NOT para inverter o resultado anterior.\n\nUtilizamos um operador and para verificar se o resultado anterior E o quarto dígito ({3}) são 1.".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
 		cprint("\nA última possibilidade, é:\n", "red")
-		print("Utilizamos um operador AND para verificar se o segundo dígito ({1}) e o terceiro dígito ({2}) são 1.\n\nUtilizamos um operador NOT para inverter o quarto dígito ({3}).\n\nUtilizamos um operador AND para verificar se o resultado do primeiro AND e o oposto do quarto dígito são 1.")
+		print("Utilizamos um operador AND para verificar se o segundo dígito ({1}) e o terceiro dígito ({2}) são 1.\n\nUtilizamos um operador NOT para inverter o quarto dígito ({3}).\n\nUtilizamos um operador AND para verificar se o resultado do primeiro AND e o oposto do quarto dígito são 1.".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
 		print("Agora utilizamos dois operadores OR, o primeiro para verificar se a primeira ou a segunda possibilidade são verdadeiras, e o segundo para verificar se o operador OR anterior ou a terceira possibilidade são verdadeiras.\n\nDesta forma, se pelo menos uma das possibilidades for verdadeira, o quarto dígito será 1.")
 		if (lista_numero[0] == "1" and not lista_numero[3] == "1") or (not lista_numero[0] == "1" and not lista_numero[1] == "1" and lista_numero[3] == "1") or (lista_numero[1] == "1" and lista_numero[2] == "1" and not lista_numero[3] =="1"):
 			lista_resultado.append("1")
@@ -75,17 +75,38 @@ def converter_bcd(numero, metodo):
 		cprint("Portanto, o quarto dígito é {}.".format(lista_resultado[3]), "red")
 		#5 digito
 		cprint("\nPara o último dígito, o processo é o seguinte: (lembrando que o resultado em binário foi de {})".format(numero), "blue")
-		print("Se o último dígito do número em binário com que começamos for 1, o resultado será 1.")
+		print("\nSe o último dígito do número em binário com que começamos for 1, o resultado será 1.")
 		if lista_numero[-1] == "1":
 			lista_resultado.append("1")
 		else:
 			lista_resultado.append("0")
-		cprint("Portanto, o último dígito é {0}, e o número binário ({1}) em BCD é ({2}).".format(lista_resultado[-1], numero, "".join(lista_resultado)), "red")
+		cprint("\nPortanto, o último dígito é {0}, e o número binário ({1}) em BCD é ({2}).".format(lista_resultado[-1], numero, "".join(lista_resultado)), "red")
 		
 	if "double dabble" in metodo:
 		pass
 	return lista_resultado
-	
+
+def converter_decimal(em_bcd):
+	decimal = {
+	"1":"1",
+	"10":"2",
+	"11":"3",
+	"100":"4",
+	"101":"5",
+	"110":"6",
+	"111":"7",
+	"1000":"8",
+	"1001":"9",
+	}
+	em_bcd = em_bcd[::-1]
+	if em_bcd[-1] == "1":
+		sobra_decimal = True
+	else: sobra_decimal = False
+	del(em_bcd[-1])
+	em_bcd = em_bcd[::-1]
+	em_decimal = decimal.get("".join(em_bcd))
+	return sobra_decimal, em_decimal
+
 #Define a função somar, que faz a soma de dois números
 def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, texto_operacao, digito_decimal, binario, metodo):
 	#Define o "dicionário" para converter de binário para decimal
@@ -231,6 +252,17 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
 			cprint("\nAntes de converter o dígito de volta a decimal, é preciso convertê-lo a BCD (Binary Coded Decimal, ou, em tradução livre, Decimal Codificado em Binário), e então para decimal.\n", "red")
 
 			em_bcd = converter_bcd(result, metodo)
+			# if em_bcd[0] == "1":
+			# 	sobra_decimal = True
+			# else:
+			# 	sobra_decimal = False
+			sobra_decimal, digito = converter_decimal(em_bcd)
+			print(converter_decimal(em_bcd))
+			if not (digito_decimal + 1 > len(primeiro_binario) and digito_decimal + 1 > len(segundo_binario)):
+				em_bcd = em_bcd[::-1]
+				del(em_bcd[-1])
+
+
 			#CONTINUAR AQUI: CONVERSÃO PARA DCB - DOUBLE DABBLE: https://www.realdigital.org/doc/6dae6583570fd816d1d675b93578203d#binary-to-bcd
 			#OUTRO METODO: KMAPS: https://electricalworkbook.com/binary-to-bcd-code-converter-circuit/
 				
