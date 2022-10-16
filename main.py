@@ -7,9 +7,98 @@ from tkinter import messagebox
 from tkinter.messagebox import askyesno
 from tkinter.messagebox import *
 import os
-
+        
 texto_operacao = []
 texto_resultado = []
+texto_resultado_decimal = []
+
+def somar_binarios(lista_digito_1, lista_digito_2, digito_1, digito_2, sobra, binario, ordem):
+        if sobra == "Primeira soma":
+        	cprint("   " + digito_1, "blue")
+        	texto_operacao.append("   " + digito_1)
+        	cprint("+  " + digito_2, "blue")
+        	texto_operacao.append("+  " + digito_2)
+        	cprint("---" + "-" * len(lista_digito_1), "blue")
+        	texto_operacao.append("---" + "-" * len(lista_digito_1))
+
+        lista_digito_1 = lista_digito_1[::-1]
+        lista_digito_2 = lista_digito_2[::-1]
+
+        bit1 = lista_digito_1[0]
+        bit2 = lista_digito_2[0]
+        print("Fazemos uma adição normal, apenas em binário. Como este é o primeiro dígito com o qual a operação será feita, podemos utilizar um half-adder:")
+        cprint("\nPrimeiro utilizamos o operador XOR para verificar se o último dígito de APENAS UM dos números é 1.", "red")
+        if (bit1 == "1" and not bit2 == "1") or (not bit1 == "1" and bit2 == "1"):
+                resultado = "1"
+                print("Como isto ocorreu, o resultado é 1.({0} e {1}, respectivamente)".format(bit1, bit2))
+        else:
+                resultado = "0"
+                print("Já que isto é falso, o resultado é 0, e a sobra precisa ser determinado. (Ambos são {0})".format(bit1))
+        cprint("\nAgora, utilizamos o operador AND para verificar se ambos são 1, para determinar a sobra.", "red")
+        if (bit1 == "1" and bit2 == "1"):
+                sobra = "1"
+                print("Já que isto é verdade, a sobra é de 1.")
+        else:
+                sobra = "0"
+                print("Como isto não é verdade, a sobra é 0. ({0} e {1}, respectivamente)\n".format(bit1, bit2))
+        texto_resultado.append(resultado)
+        print("Temos, por enquanto, a seguinte soma:")
+        for item in texto_operacao:
+                cprint(item, "blue")
+        cprint("   " + " " * (len(lista_digito_1) - 1) + resultado, "blue")
+        if len(lista_digito_1) > 1 or len(lista_digito_2) > 1:
+                somar(primeiro_binario, segundo_binario, sobra, 1, texto_resultado, texto_operacao, digito_decimal, sobra_decimal, binario, metodo)
+        else:
+                if sobra == "1":
+                        texto_resultado = texto_resultado[::-1]
+                        texto_resultado.append("1")
+                        texto_resultado = texto_resultado[::-1]
+                        txt = "".join(texto_resultado)
+                        cprint("Como não há mais nenhum 'bit' para somar, o resultado deste dígito é {0}, que, em decimal, é {1}.".format(txt, decimal.get(txt)), "red")
+
+        else:
+        lista_digito_1 = lista_digito_1[::-1]
+        lista_digito_2 = lista_digito_2[::-1]
+        bit1 = lista_digito_1[ordem]
+        bit2 = lista_digito_2[ordem]
+        if ordem == 1:
+                cprint("\nAgora que chegamos à segunda parte, é necessário utilizar um full-adder, pois pode haver uma sobra da adição anterior","yellow")
+        else:
+                print("\nPrecisamos, novamente, utilizar um full-adder")
+        print("Agora, somaremos os próximos números.")
+        cprint("\nPrimeiro, utilizamos o operador XOR, para verificar se apenas um dos dois tem valor 1.", "red")
+        XOR = ((bit1 == "1" and not bit2 == "1") or (not bit1 == "1" and bit2 == "1"))
+        if XOR:
+                print("Como isso é verdade, o operador 'devolve' o valor 1.")
+        else:
+                print("Como isso não é verdade, o operador 'devolve' o valor 0.")
+        cprint("\nAgora, utilizamos mais um operador XOR para verificar se a sobra OU (apenas um dos dois números) tem o valor 1.", "red")
+        print("Se sim, isto quer dizer que apenas um dos três ou os três valores são 1, o que implica um resultado de 1.")
+        if (XOR == False and sobra == "1") or (XOR == True and sobra != "1"):
+                print("Como isto é verdade, o resultado é 1.")
+                resultado = "1"
+        else:
+                print("Como isto não é verdade, o resultado é 0.")
+                resultado = "0"
+        cprint("\nAgora que temos o resultado, precisamos checar a sobra.", "yellow")
+        cprint("\nPrimeiro, utilizamos o operador AND para verificar se a sobra anterior E o resultado do primeiro XOR são verdadeiros.", "red")
+        print("Se sim, isso quer dizer que exatamente dois dos números são 1, e portanto o resultado seria 0, e a sobra seria 1.")
+        print("\nDepois, utilizamos outro operador AND para verificar se ambos números iniciais são 1. Se este for o caso, a sobra deverá ser 1.")
+        if (XOR == True and sobra == "1") or (bit1 == "1" and bit2 == "1"):
+                sobra = "1"
+        else:
+                sobra = "0"
+        cprint("\nCombinamos ambas as checagens com um operador OR (ou XOR) para verificar se um dos dois (ou os dois, apesar de isso não ser possível) é verdadeiro. Portanto, a sobra é {}.".format(sobra), "red")		
+        texto_resultado = texto_resultado[::-1]
+        texto_resultado.append(resultado)
+        texto_resultado = texto_resultado[::-1]
+        print("\nTemos, até agora, a seguinte operação:")
+        for item in texto_operacao:
+                cprint(item, "blue")
+        txt = texto_resultado
+        txt = "".join(txt)
+        cprint("   " + " " * (len(lista_digito_1) - len(texto_resultado)) + txt, "blue")
+        return sobra, resultado, texto_resultado, texto_operacao, txt
 
 def converter_bcd(numero, metodo):
 	lista_resultado = []
@@ -88,13 +177,13 @@ def converter_bcd(numero, metodo):
 
 def converter_decimal(em_bcd):
 	decimal = {
-	"1":"1",
-	"10":"2",
-	"11":"3",
-	"100":"4",
-	"101":"5",
-	"110":"6",
-	"111":"7",
+	"0001":"1",
+	"0010":"2",
+	"0011":"3",
+	"0100":"4",
+	"0101":"5",
+	"0110":"6",
+	"0111":"7",
 	"1000":"8",
 	"1001":"9",
 	}
@@ -104,11 +193,12 @@ def converter_decimal(em_bcd):
 	else: sobra_decimal = False
 	del(em_bcd[-1])
 	em_bcd = em_bcd[::-1]
+	
 	em_decimal = decimal.get("".join(em_bcd))
 	return sobra_decimal, em_decimal
 
 #Define a função somar, que faz a soma de dois números
-def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, texto_operacao, digito_decimal, binario, metodo):
+def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, texto_operacao, digito_decimal, sobra_decimal, binario, metodo):
 	#Define o "dicionário" para converter de binário para decimal
 	decimal = {
 		"1":"1",
@@ -147,101 +237,19 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
 	#Transforma as listas de volta em números
 	digito_1 = "".join(lista_digito_1)
 	digito_2 = "".join(lista_digito_2)
-
-
 	if sobra == "Primeira soma":
-		if (binario == False):
+        if (binario == False):
 			cprint("Para fazer uma adição, precisamos primeiro converter cada um dos dígitos em binário. Isto é feito através de uma espécie de tabela armazenada na calculadora.", "red")
 			
 			cprint("O primeiro número, em binário, é {0}. O segundo, é {1}.\n".format(primeiro_binario[::-1], segundo_binario[::-1]), "red")
 		print("Pegamos o último dígito de cada número para somar:\n")
-		 
-		cprint("   " + digito_1, "blue")
-		texto_operacao.append("   " + digito_1)
-		cprint("+  " + digito_2, "blue")
-		texto_operacao.append("+  " + digito_2)
-		cprint("---" + "-" * len(lista_digito_1), "blue")
-		texto_operacao.append("---" + "-" * len(lista_digito_1))
-		
-		lista_digito_1 = lista_digito_1[::-1]
-		lista_digito_2 = lista_digito_2[::-1]
-		
-		bit1 = lista_digito_1[0]
-		bit2 = lista_digito_2[0]
-		print("Fazemos uma adição normal, apenas em binário. Como este é o primeiro dígito com o qual a operação será feita, podemos utilizar um half-adder:")
-		cprint("\nPrimeiro utilizamos o operador XOR para verificar se o último dígito de APENAS UM dos números é 1.", "red")
-		if (bit1 == "1" and not bit2 == "1") or (not bit1 == "1" and bit2 == "1"):
-			resultado = "1"
-			print("Como isto ocorreu, o resultado é 1.({0} e {1}, respectivamente)".format(bit1, bit2))
-		else:
-			resultado = "0"
-			print("Já que isto é falso, o resultado é 0, e a sobra precisa ser determinado. (Ambos são {0})".format(bit1))
-		cprint("\nAgora, utilizamos o operador AND para verificar se ambos são 1, para determinar a sobra.", "red")
-		if (bit1 == "1" and bit2 == "1"):
-			sobra = "1"
-			print("Já que isto é verdade, a sobra é de 1.")
-		else:
-			sobra = "0"
-			print("Como isto não é verdade, a sobra é 0. ({0} e {1}, respectivamente)\n".format(bit1, bit2))
-		texto_resultado.append(resultado)
-		print("Temos, por enquanto, a seguinte soma:")
-		for item in texto_operacao:
-			cprint(item, "blue")
-		cprint("   " + " " * (len(lista_digito_1) - 1) + resultado, "blue")
-		if len(lista_digito_1) > 1 or len(lista_digito_2) > 1:
-			somar(primeiro_binario, segundo_binario, sobra, 1, texto_resultado, texto_operacao, digito_decimal, binario, metodo)
-		else:
-			if sobra == "1":
-				texto_resultado = texto_resultado[::-1]
-				texto_resultado.append("1")
-				texto_resultado = texto_resultado[::-1]
-			txt = "".join(texto_resultado)
-			cprint("Como não há mais nenhum 'bit' para somar, o resultado deste dígito é {0}, que, em decimal, é {1}.".format(txt, decimal.get(txt)), "red")
-		
-	else:
-		lista_digito_1 = lista_digito_1[::-1]
-		lista_digito_2 = lista_digito_2[::-1]
-		bit1 = lista_digito_1[ordem]
-		bit2 = lista_digito_2[ordem]
-		if ordem == 1:
-			cprint("\nAgora que chegamos à segunda parte, é necessário utilizar um full-adder, pois pode haver uma sobra da adição anterior","yellow")
-		else:
-			print("\nPrecisamos, novamente, utilizar um full-adder")
-		print("Agora, somaremos os próximos números.")
-		cprint("\nPrimeiro, utilizamos o operador XOR, para verificar se apenas um dos dois tem valor 1.", "red")
-		XOR = ((bit1 == "1" and not bit2 == "1") or (not bit1 == "1" and bit2 == "1"))
-		if XOR:
-			print("Como isso é verdade, o operador 'devolve' o valor 1.")
-		else:
-			print("Como isso não é verdade, o operador 'devolve' o valor 0.")
-		cprint("\nAgora, utilizamos mais um operador XOR para verificar se a sobra OU (apenas um dos dois números) tem o valor 1.", "red")
-		print("Se sim, isto quer dizer que apenas um dos três ou os três valores são 1, o que implica um resultado de 1.")
-		if (XOR == False and sobra == "1") or (XOR == True and sobra != "1"):
-			print("Como isto é verdade, o resultado é 1.")
-			resultado = "1"
-		else:
-			print("Como isto não é verdade, o resultado é 0.")
-			resultado = "0"
-		cprint("\nAgora que temos o resultado, precisamos checar a sobra.", "yellow")
-		cprint("\nPrimeiro, utilizamos o operador AND para verificar se a sobra anterior E o resultado do primeiro XOR são verdadeiros.", "red")
-		print("Se sim, isso quer dizer que exatamente dois dos números são 1, e portanto o resultado seria 0, e a sobra seria 1.")
-		print("\nDepois, utilizamos outro operador AND para verificar se ambos números iniciais são 1. Se este for o caso, a sobra deverá ser 1.")
-		if (XOR == True and sobra == "1") or (bit1 == "1" and bit2 == "1"):
-			sobra = "1"
-		else:
-			sobra = "0"
-		cprint("\nCombinamos ambas as checagens com um operador OR (ou XOR) para verificar se um dos dois (ou os dois, apesar de isso não ser possível) é verdadeiro. Portanto, a sobra é {}.".format(sobra), "red")		
-		texto_resultado = texto_resultado[::-1]
-		texto_resultado.append(resultado)
-		texto_resultado = texto_resultado[::-1]
-		print("\nTemos, até agora, a seguinte operação:")
-		for item in texto_operacao:
-			cprint(item, "blue")
-		txt = texto_resultado
-		txt = "".join(txt)
-		cprint("   " + " " * (len(lista_digito_1) - len(texto_resultado)) + txt, "blue")
+	sobra, resultado, texto_resultado, texto_operacao, txt = somar_binarios(lista_digito_1, lista_digito_2, digito_1, digito_2, sobra, binario, ordem)
+        if not (sobra== "Primeira soma"):
+        print("Agora que fizemos a soma, precisamos verificar se há uma sobra do dígito decimal anterior, que já foi \"salva\" no primeiro dígito do BCD.")
+        if sobra_decimal == True:
+                sobra, resultado, texto_resultado, texto_operacao, txt = somar_binarios(texto_resultado, ["1"], txt, "1", "0", binario, ordem)
 		if ordem + 1 < len(lista_digito_1):
-			somar(primeiro_binario, segundo_binario, sobra, ordem + 1, texto_resultado, texto_operacao, digito_decimal, binario, metodo)
+			somar(primeiro_binario, segundo_binario, sobra, ordem + 1, texto_resultado, texto_operacao, digito_decimal, sobra_decimal, binario, metodo)
 		else:
 			if sobra == "1":
 				texto_resultado = texto_resultado[::-1]
@@ -257,10 +265,19 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
 			# else:
 			# 	sobra_decimal = False
 			sobra_decimal, digito = converter_decimal(em_bcd)
-			print(converter_decimal(em_bcd))
+			texto_resultado_decimal = texto_resultado_decimal[::-1]
+			texto_resultado_decimal.append(digito)
+			texto_resultado_decimal = texto_resultado_decimal[::-1]
 			if not (digito_decimal + 1 > len(primeiro_binario) and digito_decimal + 1 > len(segundo_binario)):
 				em_bcd = em_bcd[::-1]
 				del(em_bcd[-1])
+				somar(primeiro_binario, segundo_binario, 0, 0, texto_resultado, texto_operacao, digito_decimal + 1, sobra_decimal, binario, metodo)
+			else:
+                if sobra_decimal == True:
+                        texto_resultado_decimal = texto_resultado_decimal[::-1]
+                        texto_resultado_decimal.append('1')
+                        texto_resultado_decimal = texto_resultado_decimal[::-1]
+                cprint("Acabamos todos os dígitos, portanto, o resultado da operação requisitada é {}.".format("".join(texto_resultado_decimal)), "red")
 
 
 			#CONTINUAR AQUI: CONVERSÃO PARA DCB - DOUBLE DABBLE: https://www.realdigital.org/doc/6dae6583570fd816d1d675b93578203d#binary-to-bcd
@@ -366,7 +383,7 @@ def check_valid(binario, metodo):
 				primeiro_binario = primeiro_binario[::-1]
 				segundo_binario = segundo_binario[::-1]
 				root.destroy()
-				somar(primeiro_binario, segundo_binario, "Primeira soma", 0, texto_resultado, texto_operacao, 0, binario, metodo)
+				somar(primeiro_binario, segundo_binario, "Primeira soma", 0, texto_resultado, texto_operacao, 0, False, binario, metodo)
 			elif choice.get() == "−":
 				pass
 			elif choice.get() == "×":
@@ -437,3 +454,4 @@ choice.set('+')
 calculate = ttk.Button(root, text = 'Calcular', command = lambda : check_valid(binary.get(), metodo.get()))
 calculate.place(anchor='center', relx=0.5, rely=0.9)
 root.mainloop()
+
