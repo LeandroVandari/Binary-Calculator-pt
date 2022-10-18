@@ -8,12 +8,14 @@ from tkinter.messagebox import askyesno
 from tkinter.messagebox import *
 import os
 import sys
-        
+
+#Cria as variáveis que serão utilizadas.
 texto_operacao = []
 texto_resultado = []
 texto_resultado_decimal = []
 acabou = False
 
+#"Regulariza" o número, isto é, deixa-o apropriado para lidar com o programa
 def regularizar(primeiro_binario, segundo_binario):
 	for step in range(len(primeiro_binario) - len(segundo_binario)):
 		segundo_binario.append("0")
@@ -21,10 +23,11 @@ def regularizar(primeiro_binario, segundo_binario):
 	segundo_binario = segundo_binario[::-1]
 	return primeiro_binario, segundo_binario
 	
-
+#Soma dois números binários, contém a lógica necessária para a adição.
 def somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_binario, lista_digito_1, lista_digito_2, digito_1, digito_2, sobra, binario, ordem, texto_resultado, texto_operacao, decimal, acabou, texto_resultado_decimal, somando_1):
-
+	#Se o programa não acabou, continua
 	if not acabou:
+		#Se é a primeira soma, utiliza um half-adder e cria a operação
 		if sobra == "Primeira soma":
 			cprint("   " + digito_1, "blue")
 			texto_operacao.append("   " + digito_1)
@@ -38,7 +41,8 @@ def somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_bina
 
 			bit1 = lista_digito_1[0]
 			bit2 = lista_digito_2[0]
-			print("Fazemos uma adição normal, apenas em binário. Como este é o primeiro dígito com o qual a operação será feita, podemos utilizar um half-adder:")
+			#Faz a adição e explica o passo a passo.
+			print("Fazemos uma adição normal, apenas em binário. Como este é o primeiro dígito (isto é, o primeiro \"bit\" do presente dígito) com o qual a operação será feita, podemos utilizar um half-adder:")
 			cprint("\nPrimeiro utilizamos o operador XOR para verificar se o último dígito de APENAS UM dos números é 1.", "red")
 			if (bit1 == "1" and not bit2 == "1") or (not bit1 == "1" and bit2 == "1"):
 				resultado = "1"
@@ -58,13 +62,17 @@ def somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_bina
 			for item in texto_operacao:
 				cprint(item, "blue")
 			cprint("   " + " " * (len(lista_digito_1) - 1) + resultado, "blue")
+			#Se há mais de um dígito e não há sobra anterior, chama a função somar para lidar com o próximo passo.
 			if (len(lista_digito_1) > 1 or len(lista_digito_2) > 1) and sobra_decimal == False:
 				texto_resultado_decimal, acabou, sobra_decimal = somar(primeiro_binario, segundo_binario, sobra, 1, texto_resultado, texto_operacao, digito_decimal, sobra_decimal, binario, texto_resultado_decimal, acabou)
+			#Se há mais de um dígito no número mas há sobra anterior, chama a função somar_binários para lidar com o próximo passo.
 			elif (len(lista_digito_1) > 1 or len(lista_digito_2) > 1) and sobra_decimal == True:
 				lista_digito_1 = lista_digito_1[::-1]
 				lista_digito_2 = lista_digito_2[::-1]
 				sobra, texto_resultado, texto_operacao, texto_resultado_decimal, acabou, digito_1, digito_2, ordem = somar_binarios(True, digito_decimal,primeiro_binario, segundo_binario, lista_digito_1, lista_digito_2, "".join(lista_digito_1), "".join(lista_digito_2), sobra, binario, 1, texto_resultado, texto_operacao, decimal, acabou, texto_resultado_decimal, True)
+		#Se não é a primeira soma, utiliza um half-adder para fazer o cálculo
 		else:
+			#Auxilia a regularizar as listas para facilitar o cálculo.
 			lista_digito_1 = lista_digito_1[::-1]
 			lista_digito_2 = lista_digito_2[::-1]
 			if len(lista_digito_1) > len(lista_digito_2):
@@ -73,9 +81,9 @@ def somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_bina
 			elif len(lista_digito_2) > len(lista_digito_1):
 				for step in range(len(lista_digito_2) - len(lista_digito_1)):
 						lista_digito_1.append("0")
-			print(lista_digito_1, lista_digito_2, ordem)
 			bit1 = lista_digito_1[ordem]
 			bit2 = lista_digito_2[ordem]
+			#Utiliza um half-adder para fazer a adição e explica o passo a passo
 			if ordem == 1:
 				cprint("\nAgora que chegamos à segunda parte, é necessário utilizar um full-adder, pois pode haver uma sobra da adição anterior","yellow")
 			else:
@@ -114,23 +122,26 @@ def somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_bina
 			txt = texto_resultado
 			txt = "".join(txt)
 			cprint("   " + " " * (len(lista_digito_1) - len(texto_resultado)) + txt, "blue")
+		#Se está apenas adicionando 1 (Por haver sobra decimal), chama a função somar_binários novamente.
 		if somando_1 and ordem + 1 < len(lista_digito_1):
 			sobra, texto_resultado, texto_operacao, texto_resultado_decimal, acabou, digito_1, digito_2, ordem = somar_binarios(True, digito_decimal,primeiro_binario, segundo_binario, lista_digito_1, lista_digito_2, "".join(lista_digito_1), "".join(lista_digito_2), sobra, binario, ordem + 1, texto_resultado, texto_operacao, decimal, acabou, texto_resultado_decimal, True)
 		
 		txt = texto_resultado
 		txt = "".join(txt)
-        
+    #Devolve os valores atualizados de diversas variáveis.
 	return sobra, texto_resultado, texto_operacao, texto_resultado_decimal, acabou, digito_1, digito_2, ordem
-
+#Converte um número para BCD.
 def converter_bcd(numero):
     lista_resultado = []
     lista_numero = []
     lista_numero = list(numero)
+	#Se o número tiver menos de 5 dígitos, adiciona zeros ao seu início para a conversão.
     if len(lista_numero) < 5:
         lista_numero = lista_numero[::-1]
         for step in range(5 - len(lista_numero)):
             lista_numero.append("0")
         lista_numero = lista_numero[::-1]
+	#Faz a conversão e explica o passo a passo.
     cprint("Para converter o número binário em BCD utilizando portões de lógica, utilizam-se os mapas de Karnaugh para criar o circuito que fará a conversão.", "blue")
     cprint("(Se você quiser criar circuitos de lógica a partir de tabelas ou mapas de Karnaugh, acesse: https://electricalworkbook.com/binary-to-bcd-code-converter-circuit/")
     cprint("\nPara o primeiro dígito do BCD, o processo é o seguinte: (lembrando que o resultado em binário foi de {})".format(numero), "blue")
@@ -188,8 +199,10 @@ def converter_bcd(numero):
         lista_resultado.append("0")
     cprint("\nPortanto, o último dígito é {0}, e o número binário ({1}) em BCD é ({2}).".format(lista_resultado[-1], numero, "".join(lista_resultado)), "red")
 
+	#Devolve o número convertido em BCD.
     return lista_resultado
 
+#Converte um número BCD para o decimal, dizendo se é maior que 10 e qual seu dígito das unidades.
 def converter_decimal(em_bcd):
 	decimal = {
     "0000":"0",
@@ -210,11 +223,13 @@ def converter_decimal(em_bcd):
 	del(em_bcd[-1])
 	em_bcd = em_bcd[::-1]
 	em_decimal = decimal.get("".join(em_bcd))
+	#Devolve o segundo dígito em decimal, e "diz" se o a casa das dezenas é um 1 ou um 0.
 	return sobra_decimal, em_decimal
 
 #Define a função somar, que faz a soma de dois números
 def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, texto_operacao, digito_decimal, sobra_decimal, binario, texto_resultado_decimal, acabou):
 	if not acabou:
+		#Regulariza os números, para facilitar a soma.
 		if len(primeiro_binario) > len(segundo_binario):
 			for step in range(len(primeiro_binario) - len(segundo_binario)):
 				segundo_binario.append("0")
@@ -224,7 +239,7 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
 			
 		#Define o "dicionário" para converter de binário para decimal
 		decimal = {
-					"0":"0",
+			"0":"0",
 			"1":"1",
 			"10":"2",
 			"11":"3",
@@ -265,9 +280,10 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
 			if (binario == False):
 				cprint("Para fazer uma adição, precisamos primeiro converter cada um dos dígitos em binário. Isto é feito através de uma espécie de tabela armazenada na calculadora.", "red")
 				cprint("O primeiro número, em binário, é {0}. O segundo, é {1}.\n".format(primeiro_binario[::-1], segundo_binario[::-1]), "red")
-			print("Pegamos o último dígito de cada número para somar:\n")
-		
+			print("Pegamos atual dígito de cada número que você escolheu para somar:\n")
+		#Chama a função somar_binarios para começar o cálculo.
 		sobra, texto_resultado, texto_operacao, texto_resultado_decimal, acabou, digito_1, digito_2, ordem = somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_binario, lista_digito_1, lista_digito_2, digito_1, digito_2, sobra, binario, ordem, texto_resultado, texto_operacao, decimal, acabou, texto_resultado_decimal, False)
+		#Se acabou a soma do dígito, e a sobra é 1, adiciona um 1 no início do resultado.
 		if not ordem + 1 < len(lista_digito_1):
 			if sobra == "1":
 				texto_resultado = texto_resultado[::-1]
@@ -275,6 +291,7 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
 				texto_resultado = texto_resultado[::-1]
 				print("Como a sobra era de 1, e já acabamos este dígito, adicionamos um 1 ao início do número, ficando com {}.".format(texto_resultado))
 		if not acabou:
+			#Verifica se há uma sobra do dígito decimal anterior e, se há, adiciona 1 ao número presente.
 			if not ordem + 1 < len(lista_digito_1):
 				print("Agora que fizemos a soma, precisamos verificar se há uma sobra do dígito decimal anterior, que já foi \"salva\" no primeiro dígito do BCD.")
 				if sobra_decimal == True:
@@ -287,47 +304,47 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
 						texto_resultado = texto_resultado[::-1]
 				else: 
 					print("Como não há, prosseguimos normalmente.")
+			#Se ainda não acabou o dígito, chama a função novamente para calcular.
 			if ordem + 1 < len(lista_digito_1):
 				try:
 					texto_resultado_decimal, acabou, sobra_decimal = somar(primeiro_binario, segundo_binario, sobra, ordem + 1, texto_resultado, texto_operacao, digito_decimal, sobra_decimal, binario, texto_resultado_decimal, acabou)
 				except TypeError:
 					pass
 			if not acabou:
+				#Dá o resultado em binário.
 				if not (ordem + 1 < len(lista_digito_1)):
 						
 					result = "".join(texto_resultado)
 					print("\nO resultado da soma deste número é {}.".format(result))
 					cprint("\nAntes de converter o dígito de volta a decimal, é preciso convertê-lo a BCD (Binary Coded Decimal, ou, em tradução livre, Decimal Codificado em Binário), e então para decimal.\n", "red")
+					#Converte o número para BCD e então para decimal
 					em_bcd = converter_bcd(result)
 					sobra_decimal, digito = converter_decimal(em_bcd)
 					texto_resultado_decimal = texto_resultado_decimal[::-1]
 					print("Podemos utilizar a tabela previamente mencionada para converter os quatro últimos dígitos do BCD em decimal.\n{0} em decimal é {1}.".format("".join(em_bcd), digito))
 					texto_resultado_decimal.append(digito)
 					texto_resultado_decimal = texto_resultado_decimal[::-1]
+					#Se o dígito em decimal já acabou, verifica se o número como um todo acabou. Se não, chama a soma novamente.
 					if not (digito_decimal + 1 >= len(primeiro_binario) and digito_decimal + 1 >= len(segundo_binario)):
-						print(primeiro_binario, digito_decimal)
 						em_bcd = em_bcd[::-1]
 						del(em_bcd[-1])
 						texto_resultado_decimal, acabou, sobra_decimal = somar(primeiro_binario, segundo_binario, "Primeira soma", 0, [], [], digito_decimal + 1, sobra_decimal, binario, texto_resultado_decimal, acabou)
 					else:
+						#Se o número como um todo já foi terminado, verifica se há uma sobra (se sim, adiciona 1 ao início do número) e dá o resultado da operação.
 						if sobra_decimal == True:
-							decoy = texto_resultado_decimal
 							texto_resultado_decimal = texto_resultado_decimal[::-1]
 							texto_resultado_decimal.append('1')
 							texto_resultado_decimal = texto_resultado_decimal[::-1]
-						cprint("Acabamos todos os dígitos, portanto, o resultado da operação requisitada é {}.".format("".join(texto_resultado_decimal)), "red")
+						cprint("\n\nAcabamos todos os dígitos, portanto, todo este processo nos dá um resultado de {}.".format("".join(texto_resultado_decimal)), "red")
 						acabou = True
 						input()
 						sys.exit()
-						return texto_resultado_decimal, acabou, sobra_decimal
 			else:
+				#Se já acabou, devolve o resultado
 				return texto_resultado_decimal, acabou, sobra_decimal
-
+		#Devolve as variáveis necessárias;
 		return texto_resultado_decimal, acabou, sobra_decimal
 
-				#CONTINUAR AQUI: CONVERSÃO PARA DCB - DOUBLE DABBLE: https://www.realdigital.org/doc/6dae6583570fd816d1d675b93578203d#binary-to-bcd
-				#OUTRO "portoes": KMAPS: https://electricalworkbook.com/binary-to-bcd-code-converter-circuit/
-					
             
 
         
