@@ -31,8 +31,8 @@ def regularizar(primeiro_binario, segundo_binario):
 	return primeiro_binario, segundo_binario
 	
 #Soma dois números binários, contém a lógica necessária para a adição.
-def somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_binario, lista_digito_1, lista_digito_2, digito_1, digito_2, sobra, binario, ordem, texto_resultado, texto_operacao, decimal, acabou, texto_resultado_decimal, somando_1):
-
+def somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_binario, lista_digito_1, lista_digito_2, digito_1, digito_2, sobra, binario, ordem, texto_resultado, texto_operacao, decimal, acabou, texto_resultado_decimal, somando_1, passo_a_passo):
+        global passo_a_passo
 	#Se o programa não acabou, continua
 	if not acabou:
 		#Se é a primeira soma, utiliza um half-adder e cria a operação
@@ -76,12 +76,12 @@ def somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_bina
 			passo()
 			#Se há mais de um dígito e não há sobra anterior, chama a função somar para lidar com o próximo passo.
 			if (len(lista_digito_1) > 1 or len(lista_digito_2) > 1) and sobra_decimal == False:
-				texto_resultado_decimal, acabou, sobra_decimal = somar(primeiro_binario, segundo_binario, sobra, 1, texto_resultado, texto_operacao, digito_decimal, sobra_decimal, binario, texto_resultado_decimal, acabou)
+				texto_resultado_decimal, acabou, sobra_decimal = somar(primeiro_binario, segundo_binario, sobra, 1, texto_resultado, texto_operacao, digito_decimal, sobra_decimal, binario, texto_resultado_decimal, acabou, passo_a_passo)
 			#Se há mais de um dígito no número mas há sobra anterior, chama a função somar_binários para lidar com o próximo passo.
 			elif (len(lista_digito_1) > 1 or len(lista_digito_2) > 1) and sobra_decimal == True:
 				lista_digito_1 = lista_digito_1[::-1]
 				lista_digito_2 = lista_digito_2[::-1]
-				sobra, texto_resultado, texto_operacao, texto_resultado_decimal, acabou, digito_1, digito_2, ordem = somar_binarios(True, digito_decimal,primeiro_binario, segundo_binario, lista_digito_1, lista_digito_2, "".join(lista_digito_1), "".join(lista_digito_2), sobra, binario, 1, texto_resultado, texto_operacao, decimal, acabou, texto_resultado_decimal, True)
+				sobra, texto_resultado, texto_operacao, texto_resultado_decimal, acabou, digito_1, digito_2, ordem = somar_binarios(True, digito_decimal,primeiro_binario, segundo_binario, lista_digito_1, lista_digito_2, "".join(lista_digito_1), "".join(lista_digito_2), sobra, binario, 1, texto_resultado, texto_operacao, decimal, acabou, texto_resultado_decimal, True, passo_a_passo)
 		#Se não é a primeira soma, utiliza um full-adder para fazer o cálculo
 		else:
 			#Auxilia a regularizar as listas para facilitar o cálculo.
@@ -146,7 +146,7 @@ def somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_bina
 			lista_digito_2 = lista_digito_2[::-1]
 		#Se está apenas adicionando 1 (Por haver sobra decimal), chama a função somar_binários novamente.
 		if somando_1 and ordem + 1 < len(lista_digito_1):
-			sobra, texto_resultado, texto_operacao, texto_resultado_decimal, acabou, digito_1, digito_2, ordem = somar_binarios(True, digito_decimal,primeiro_binario, segundo_binario, lista_digito_1, lista_digito_2, "".join(lista_digito_1), "".join(lista_digito_2), sobra, binario, ordem + 1, texto_resultado, texto_operacao, decimal, acabou, texto_resultado_decimal, True)
+			sobra, texto_resultado, texto_operacao, texto_resultado_decimal, acabou, digito_1, digito_2, ordem = somar_binarios(True, digito_decimal,primeiro_binario, segundo_binario, lista_digito_1, lista_digito_2, "".join(lista_digito_1), "".join(lista_digito_2), sobra, binario, ordem + 1, texto_resultado, texto_operacao, decimal, acabou, texto_resultado_decimal, True, passo_a_passo)
 		
 		txt = texto_resultado
 		txt = "".join(txt)
@@ -257,7 +257,8 @@ def converter_decimal(em_bcd):
 	return sobra_decimal, em_decimal
 
 #Define a função somar, que faz a soma de dois números
-def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, texto_operacao, digito_decimal, sobra_decimal, binario, texto_resultado_decimal, acabou):
+def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, texto_operacao, digito_decimal, sobra_decimal, binario, texto_resultado_decimal, acabou, passo_a_passo):
+	global passo_a_passo
 	if not acabou:
 		#Regulariza os números, para facilitar a soma.
 		if len(primeiro_binario) > len(segundo_binario):
@@ -315,7 +316,7 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
 			if digito_decimal == 0:
 				print("(Neste caso, estamos fazendo a primeira soma. Portanto, pegamos os *ÚLTIMOS* dígitos decimais de ambos os números, já convertidos.)\n")
 		#Chama a função somar_binarios para começar o cálculo.
-		sobra, texto_resultado, texto_operacao, texto_resultado_decimal, acabou, digito_1, digito_2, ordem = somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_binario, lista_digito_1, lista_digito_2, digito_1, digito_2, sobra, binario, ordem, texto_resultado, texto_operacao, decimal, acabou, texto_resultado_decimal, False)
+		sobra, texto_resultado, texto_operacao, texto_resultado_decimal, acabou, digito_1, digito_2, ordem = somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_binario, lista_digito_1, lista_digito_2, digito_1, digito_2, sobra, binario, ordem, texto_resultado, texto_operacao, decimal, acabou, texto_resultado_decimal, False, passo_a_passo)
 		#Se acabou a soma do dígito, e a sobra é 1, adiciona um 1 no início do resultado.
 		if not ordem + 1 < len(lista_digito_1):
 			if sobra == "1":
@@ -331,7 +332,7 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
 				if sobra_decimal == True:
 					cprint("Como há, adicionamos 1 ao resultado deste dígito.")
 					lista_digito_1, lista_digito_2 = regularizar(texto_resultado, ["1"])
-					sobra, texto_resultado, texto_operacao, texto_resultado_decimal, acabou, digito_1, digito_2, ordem = somar_binarios(True, digito_decimal,primeiro_binario, segundo_binario, lista_digito_1, lista_digito_2, "".join(lista_digito_1), "".join(lista_digito_2), "Primeira soma", binario, ordem, [], [], decimal, acabou, texto_resultado_decimal, True)
+					sobra, texto_resultado, texto_operacao, texto_resultado_decimal, acabou, digito_1, digito_2, ordem = somar_binarios(True, digito_decimal,primeiro_binario, segundo_binario, lista_digito_1, lista_digito_2, "".join(lista_digito_1), "".join(lista_digito_2), "Primeira soma", binario, ordem, [], [], decimal, acabou, texto_resultado_decimal, True, passo_a_passo)
 					if sobra == "1":
 						texto_resultado = texto_resultado[::-1]
 						texto_resultado.append("1")
@@ -342,7 +343,7 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
 			#Se ainda não acabou o dígito, chama a função novamente para calcular.
 			if ordem + 1 < len(lista_digito_1):
 				try:
-					texto_resultado_decimal, acabou, sobra_decimal = somar(primeiro_binario, segundo_binario, sobra, ordem + 1, texto_resultado, texto_operacao, digito_decimal, sobra_decimal, binario, texto_resultado_decimal, acabou)
+					texto_resultado_decimal, acabou, sobra_decimal = somar(primeiro_binario, segundo_binario, sobra, ordem + 1, texto_resultado, texto_operacao, digito_decimal, sobra_decimal, binario, texto_resultado_decimal, acabou, passo_a_passo)
 				except TypeError:
 					pass
 			if not acabou:
@@ -365,7 +366,7 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
 					if not (digito_decimal + 1 >= len(primeiro_binario) and digito_decimal + 1 >= len(segundo_binario)):
 						em_bcd = em_bcd[::-1]
 						del(em_bcd[-1])
-						texto_resultado_decimal, acabou, sobra_decimal = somar(primeiro_binario, segundo_binario, "Primeira soma", 0, [], [], digito_decimal + 1, sobra_decimal, binario, texto_resultado_decimal, acabou)
+						texto_resultado_decimal, acabou, sobra_decimal = somar(primeiro_binario, segundo_binario, "Primeira soma", 0, [], [], digito_decimal + 1, sobra_decimal, binario, texto_resultado_decimal, acabou, passo_a_passo)
 					else:
 						#Se o número como um todo já foi terminado, verifica se há uma sobra (se sim, adiciona 1 ao início do número) e dá o resultado da operação.
 						if sobra_decimal == True:
@@ -484,7 +485,7 @@ def check_valid(binario):
                 primeiro_binario = primeiro_binario[::-1]
                 segundo_binario = segundo_binario[::-1]
                 root.destroy()
-                somar(primeiro_binario, segundo_binario, "Primeira soma", 0, texto_resultado, texto_operacao, 0, False, binario, texto_resultado_decimal, acabou)
+                somar(primeiro_binario, segundo_binario, "Primeira soma", 0, texto_resultado, texto_operacao, 0, False, binario, texto_resultado_decimal, acabou, passo_a_passo)
             elif choice.get() == "−":
                 pass
             elif choice.get() == "×":
