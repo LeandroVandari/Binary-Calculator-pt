@@ -52,7 +52,7 @@ def somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_bina
 			#Faz a adição e explica o passo a passo.
 			print("A adição de números binários é parecida com a de decimais. Começamos pelo dígito à direita.\n\nNo caso dos binários, se o resultado for maior do que 1, gera um resto.\n\nComo este é o primeiro dígito (isto é, o primeiro \"bit\" do presente dígito) com o qual a operação será feita, podemos utilizar um half-adder, um programa que realiza somas de dois bits, sem incluir sobras anteriores.")
 			passo()
-			cprint("\nMAIS UMA ETAPA\n\nPrimeiro utilizamos o operador XOR para verificar, entre os bits somados, se APENAS UM DELES é igual a 1 (e não ambos).", "red")
+			cprint("\nHALF ADDER\n\nPrimeiro utilizamos o operador XOR para verificar, entre os bits somados, se APENAS UM DELES é igual a 1 (e não ambos).", "red")
 			if (bit1 == "1" and not bit2 == "1") or (not bit1 == "1" and bit2 == "1"):
 				resultado = "1"
 				print("\nComo isto ocorreu, o resultado é 1.(Lembre-se que os bits somados eram {0} e {1})".format(bit1, bit2))
@@ -96,7 +96,7 @@ def somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_bina
 			bit1 = lista_digito_1[ordem]
 			bit2 = lista_digito_2[ordem]
 			#Utiliza um half-adder para fazer a adição e explica o passo a passo
-			cprint("\nMAIS UMA ETAPA\n", "red")
+			cprint("\nFULL ADDER\n", "red")
 			if ordem == 1:
 				cprint("\nAgora que chegamos à segunda parte, é necessário utilizar um full-adder, pois pode haver uma sobra da adição anterior","red")
 			else:
@@ -363,6 +363,7 @@ def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, text
 					result = "".join(texto_resultado)
 					print("\nO resultado da soma deste número é {}.".format(result))
 					passo()
+					cprint("\nCONVERSÃO PARA BCD\n")
 					cprint("\nAntes de converter o dígito de volta a decimal, é preciso convertê-lo a BCD (Binary Coded Decimal, ou, em tradução livre, Decimal Codificado em Binário), e então para decimal.\n", "red")
 					#Converte o número para BCD e então para decimal
 					em_bcd = converter_bcd(result)
