@@ -114,10 +114,10 @@ def somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_bina
 			cprint("\nAgora, utilizamos mais um operador XOR para verificar se a sobra anterior OU (apenas um dos dois números) tem o valor 1.", "red")
 			print("\nSe sim, isto quer dizer que apenas um dos três ou os três valores são 1, o que implica um resultado de 1.")
 			if (XOR == False and sobra == "1") or (XOR == True and sobra != "1"):
-				print("Como isto é verdade, o resultado é 1.")
+				cprint("Como isto é verdade, o resultado é 1.", "red")
 				resultado = "1"
 			else:
-				print("Como isto não é verdade, o resultado é 0.")
+				cprint("Como isto não é verdade, o resultado é 0.", "red")
 				resultado = "0"
 			passo()
 			cprint("\nAgora que temos o resultado, precisamos checar a sobra.", "yellow")
@@ -125,12 +125,14 @@ def somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_bina
 			passo()
 			print("Se sim, isso quer dizer que exatamente dois dos números são 1, e portanto o resultado seria 0, e a sobra seria 1.")
 			passo()
-			cprint("\nDepois, utilizamos outro operador AND para verificar se ambos números iniciais são 1. Se este for o caso, a sobra deverá ser 1.", "red")
+			cprint("\nDepois, utilizamos outro operador AND para verificar se ambos números iniciais são 1.", "red")
+			print("Se este for o caso, a sobra deverá ser 1.")
 			if (XOR == True and sobra == "1") or (bit1 == "1" and bit2 == "1"):
 				sobra = "1"
 			else:
 				sobra = "0"
-			cprint("\nCombinamos ambas as checagens com um operador OR (ou XOR) para verificar se um dos dois (ou os dois, apesar de isso não ser possível) é verdadeiro. Portanto, a sobra é {}.".format(sobra), "red")        
+			cprint("\nCombinamos ambas as checagens com um operador OR (ou XOR) para verificar se um dos dois (ou os dois, apesar de isso não ser possível) é verdadeiro.", "red")
+			cprint("Portanto, a sobra é {}.".format(sobra), "red")        
 			texto_resultado = texto_resultado[::-1]
 			texto_resultado.append(resultado)
 			texto_resultado = texto_resultado[::-1]
@@ -185,7 +187,7 @@ def converter_bcd(numero):
 	#2 digito
     cprint("\nPara o segundo dígito, o processo é o seguinte: (lembrando que o resultado em binário foi de {})".format(numero), "red")
     print("\nPrimeiro, utilizamos um operador NOT para inverter o terceiro dígito do número a ser convertido ({2}).".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
-    cprint("\nDepois, utilizamos um operador AND para verificar se o segundo dígito ({1}) e o oposto do terceiro dígito (fornecido pelo operador NOT anterior) são 1.\n\nAgora, utilizamos um operador NOT para inverter o quarto dígito ({3}).\n\nDepois, utilizamos um operador AND para verificar se o oposto do quarto dígito e o resultado obtido anteriormente (segundo dígito e oposto do terceiro dígito) são 1.".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]), "red")
+    print("\nDepois, utilizamos um operador AND para verificar se o segundo dígito ({1}) e o oposto do terceiro dígito (fornecido pelo operador NOT anterior) são 1.\n\nAgora, utilizamos um operador NOT para inverter o quarto dígito ({3}).\n\nDepois, utilizamos um operador AND para verificar se o oposto do quarto dígito e o resultado obtido anteriormente (segundo dígito e oposto do terceiro dígito) são 1.".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
     passo()
     cprint("\nEsta é uma das possibilidades para que o segundo dígito seja um 1. Agora, calcularemos a outra.", "blue")
     print("\nPara calcular a outra possibilidade, utilizamos um operador AND para verificar se o primeiro dígito ({0}) e o quarto dígito ({3}) são 1.\n\nPor fim, utilizamos um operador OR para verificar se pelo menos uma das possibilidades são verdadeiras.".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
