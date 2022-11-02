@@ -163,10 +163,14 @@ def converter_bcd(numero):
         for step in range(5 - len(lista_numero)):
             lista_numero.append("0")
         lista_numero = lista_numero[::-1]
+
 	#Faz a conversão e explica o passo a passo.
     cprint("Para converter o número binário em BCD utilizando portões de lógica, utilizam-se os mapas de Karnaugh para criar o circuito que fará a conversão.", "blue")
-    cprint("(Se você quiser criar circuitos de lógica a partir de tabelas ou mapas de Karnaugh, acesse: https://electricalworkbook.com/binary-to-bcd-code-converter-circuit/")
-    cprint("\nPara o primeiro dígito do BCD, o processo é o seguinte: (lembrando que o resultado em binário foi de {})".format(numero), "blue")
+    cprint("(Se você quiser criar circuitos de lógica a partir de tabelas ou mapas de Karnaugh, acesse: https://electricalworkbook.com/binary-to-bcd-code-converter-circuit/)")
+    cprint("\nPrimeiro, é necessário adicionar zeros ao início do número, para que ele fique com 5 dígitos. Desta forma, {0} vira {1}.".format(numero, "".join(lista_numero)))
+    numero = "".join(lista_numero)
+    passo()
+    cprint("\nPara o primeiro dígito do BCD, o processo é o seguinte: (lembrando que o resultado em binário foi de {})".format(numero), "red")
     passo()
 	#1 digito
     print("\nUtilizamos um operador AND para verificar se o segundo dígito do binário ({1}) e o quarto dígito ({3}) são 1.\n\nUtilizamos outro operador AND para verificar se o segundo dígito ({1}) e o terceiro dígito ({2}) são 1.\n\n".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
@@ -179,49 +183,49 @@ def converter_bcd(numero):
     cprint("\nPortanto, o primeiro dígito é {}.".format(lista_resultado[0]), "red")
     passo()
 	#2 digito
-    cprint("\nPara o segundo dígito, o processo é o seguinte: (lembrando que o resultado em binário foi de {})".format(numero), "blue")
+    cprint("\nPara o segundo dígito, o processo é o seguinte: (lembrando que o resultado em binário foi de {})".format(numero), "red")
     print("\nPrimeiro, utilizamos um operador NOT para inverter o terceiro dígito do número a ser convertido ({2}).".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
-    cprint("Depois, utilizamos um operador AND para verificar se o segundo dígito ({1}) e o oposto do terceiro dígito (fornecido pelo operador NOT anterior) são 1.\n\nAgora, utilizamos um operador NOT para inverter o quarto dígito ({3}).\n\nDepois, utilizamos um operador AND para verificar se o oposto do quarto dígito e o resultado obtido anteriormente (segundo dígito e oposto do terceiro dígito) são 1.".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]), "red")
-    cprint("\nEsta é uma das possibilidades para que o segundo dígito seja um 1. Agora, calcularemos a outra.", "red")
+    cprint("\nDepois, utilizamos um operador AND para verificar se o segundo dígito ({1}) e o oposto do terceiro dígito (fornecido pelo operador NOT anterior) são 1.\n\nAgora, utilizamos um operador NOT para inverter o quarto dígito ({3}).\n\nDepois, utilizamos um operador AND para verificar se o oposto do quarto dígito e o resultado obtido anteriormente (segundo dígito e oposto do terceiro dígito) são 1.".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]), "red")
+    cprint("\nEsta é uma das possibilidades para que o segundo dígito seja um 1. Agora, calcularemos a outra.", "blue")
     print("\nPara calcular a outra possibilidade, utilizamos um operador AND para verificar se o primeiro dígito ({0}) e o quarto dígito ({3}) são 1.\n\nPor fim, utilizamos um operador OR para verificar se pelo menos uma das possibilidades são verdadeiras.".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
     if (lista_numero[0] == "1" and lista_numero[3] == "1") or (lista_numero[1] == "1" and not lista_numero[2] == "1" and not lista_numero[3] == "1"):
         lista_resultado.append("1")
     else: 
         lista_resultado.append("0") 
-    cprint("Portanto, o segundo dígito é {}.".format(lista_resultado[1]), "red")
+    cprint("\nPortanto, o segundo dígito é {}.".format(lista_resultado[1]), "red")
     passo()
 	#3 digito
-    cprint("\nPara o terceiro dígito, o processo é o seguinte: (lembrando que o resultado em binário foi de {})".format(numero), "blue")
-    cprint("\nPara este dígito, há 3 possibilidades de que seja um 1.\n\nA primeira, é a seguinte:", "red")
-    print("Primeiro, utilizamos um operador NOT para inverter o segundo dígito ({1}).\n\nDepois, utilizamos um operador AND para verificar se o oposto do segundo dígito E o terceiro dígito ({3}) são 1.\n".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
-    cprint("\nOutra possibilidade, é a seguinte:\n", "red")
-    print("Utilizamos um operador AND para verificar se o terceiro número ({2}) e o quarto número ({3}) são 1.".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
-    cprint("\nA última possibilidade, é:\n", "red")
-    print("Utilizamos um operador NOT para inverter o quarto dígito ({3}).\n\nUtilizamos um operador and para verificar se o primeiro dígito ({0}) e o oposto do quarto dígito são 1.\n".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
-    print("\nAgora utilizamos dois operadores OR, o primeiro para verificar se a primeira ou a segunda possibilidade são verdadeiras, e o segundo para verificar se o operador OR anterior ou a terceira possibilidade são verdadeiras.\n\nDesta forma, se pelo menos uma das possibilidades for verdadeira, o terceiro dígito será 1.")
+    cprint("\nPara o terceiro dígito, o processo é o seguinte: (lembrando que o resultado em binário foi de {})".format(numero), "red")
+    cprint("\nPara este dígito, há 3 possibilidades de que seja um 1.\n\nA primeira, é a seguinte:", "blue")
+    print("\nPrimeiro, utilizamos um operador NOT para inverter o segundo dígito ({1}).\n\nDepois, utilizamos um operador AND para verificar se o oposto do segundo dígito E o terceiro dígito ({3}) são 1.\n".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
+    cprint("\nOutra possibilidade, é a seguinte:\n", "blue")
+    print("\nUtilizamos um operador AND para verificar se o terceiro número ({2}) e o quarto número ({3}) são 1.".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
+    cprint("\nA última possibilidade, é:\n", "blue")
+    print("\nUtilizamos um operador NOT para inverter o quarto dígito ({3}).\n\nUtilizamos um operador and para verificar se o primeiro dígito ({0}) e o oposto do quarto dígito são 1.\n".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
+    print("\nAgora utilizamos dois operadores OR:\n\n\tO primeiro, para verificar se a primeira ou a segunda possibilidade são verdadeiras\n\n\tE o segundo, para verificar se o operador OR anterior ou a terceira possibilidade são verdadeiras.\n\nDesta forma, se pelo menos uma das possibilidades for verdadeira, o terceiro dígito será 1.")
     if (not lista_numero[1] == "1" and lista_numero[2] == "1") or (lista_numero[2] == "1" and lista_numero[3] == "1") or (lista_numero[0] == "1" and not lista_numero[3] == "1"):
         lista_resultado.append("1")
     else:
         lista_resultado.append("0")
-    cprint("Portanto, o terceiro dígito é {}.".format(lista_resultado[2]), "red")
+    cprint("\nPortanto, o terceiro dígito é {}.".format(lista_resultado[2]), "red")
     passo()
 	#4 digito
-    cprint("\nPara o quarto dígito, o processo é o seguinte: (lembrando que o resultado em binário foi de {})".format(numero), "blue")
-    cprint("\nPara este dígito, há 3 possibilidades de que seja um 1.\n\nA primeira, é a seguinte:", "red")
-    print("Primeiro, utilizamos um operador NOT para inverter o quarto dígito ({3}).\n\nDepois, utilizamos o operador AND para verificar se o primeiro dígito ({0}) e o oposto do quarto dígito são 1.".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
-    cprint("\nOutra possibilidade, é a seguinte:\n", "red")
-    print("Utilizamos um operador AND para verificar se o primeiro dígito ({0}) e o segundo dígito ({1}) são 1.\n\nUtilizamos um operador NOT para inverter o resultado anterior.\n\nUtilizamos um operador and para verificar se o resultado anterior E o quarto dígito ({3}) são 1.".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
-    cprint("\nA última possibilidade, é:\n", "red")
+    cprint("\nPara o quarto dígito, o processo é o seguinte: (lembrando que o resultado em binário foi de {})".format(numero), "red")
+    cprint("\nPara este dígito, há 3 possibilidades de que seja um 1.\n\nA primeira, é a seguinte:", "blue")
+    print("\nPrimeiro, utilizamos um operador NOT para inverter o quarto dígito ({3}).\n\nDepois, utilizamos o operador AND para verificar se o primeiro dígito ({0}) e o oposto do quarto dígito são 1.".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
+    cprint("\nOutra possibilidade, é a seguinte:\n", "blue")
+    print("\nUtilizamos um operador AND para verificar se o primeiro dígito ({0}) e o segundo dígito ({1}) são 1.\n\nUtilizamos um operador NOT para inverter o resultado anterior.\n\nUtilizamos um operador and para verificar se o resultado anterior E o quarto dígito ({3}) são 1.".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
+    cprint("\nA última possibilidade, é:\n", "blue")
     print("Utilizamos um operador AND para verificar se o segundo dígito ({1}) e o terceiro dígito ({2}) são 1.\n\nUtilizamos um operador NOT para inverter o quarto dígito ({3}).\n\nUtilizamos um operador AND para verificar se o resultado do primeiro AND e o oposto do quarto dígito são 1.".format(lista_numero[0], lista_numero[1], lista_numero[2], lista_numero[3], lista_numero[4]))
-    print("Agora utilizamos dois operadores OR, o primeiro para verificar se a primeira ou a segunda possibilidade são verdadeiras, e o segundo para verificar se o operador OR anterior ou a terceira possibilidade são verdadeiras.\n\nDesta forma, se pelo menos uma das possibilidades for verdadeira, o quarto dígito será 1.")
+    print("Agora, utilizamos dois operadores OR:\n\n\tO primeiro, para verificar se a primeira ou a segunda possibilidade são verdadeiras\n\n\tE o segundo, para verificar se o operador OR anterior ou a terceira possibilidade são verdadeiras.\n\nDesta forma, se pelo menos uma das possibilidades for verdadeira, o quarto dígito será 1.")
     if (lista_numero[0] == "1" and not lista_numero[3] == "1") or (not lista_numero[0] == "1" and not lista_numero[1] == "1" and lista_numero[3] == "1") or (lista_numero[1] == "1" and lista_numero[2] == "1" and not lista_numero[3] =="1"):
         lista_resultado.append("1")
     else:
         lista_resultado.append("0")
-    cprint("Portanto, o quarto dígito é {}.".format(lista_resultado[3]), "red")
+    cprint("\nPortanto, o quarto dígito é {}.".format(lista_resultado[3]), "red")
     passo()
 	#5 digito
-    cprint("\nPara o último dígito, o processo é o seguinte: (lembrando que o resultado em binário foi de {})".format(numero), "blue")
+    cprint("\nPara o último dígito, o processo é o seguinte: (lembrando que o resultado em binário foi de {})".format(numero), "red")
     print("\nSe o último dígito do número em binário com que começamos for 1, o resultado será 1.")
     if lista_numero[-1] == "1":
         lista_resultado.append("1")
