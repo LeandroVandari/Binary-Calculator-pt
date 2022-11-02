@@ -32,7 +32,6 @@ def regularizar(primeiro_binario, segundo_binario):
 	
 #Soma dois números binários, contém a lógica necessária para a adição.
 def somar_binarios(sobra_decimal, digito_decimal, primeiro_binario, segundo_binario, lista_digito_1, lista_digito_2, digito_1, digito_2, sobra, binario, ordem, texto_resultado, texto_operacao, decimal, acabou, texto_resultado_decimal, somando_1, passo_a_passo):
-        global passo_a_passo
 	#Se o programa não acabou, continua
 	if not acabou:
 		#Se é a primeira soma, utiliza um half-adder e cria a operação
@@ -258,7 +257,6 @@ def converter_decimal(em_bcd):
 
 #Define a função somar, que faz a soma de dois números
 def somar(primeiro_binario, segundo_binario, sobra, ordem, texto_resultado, texto_operacao, digito_decimal, sobra_decimal, binario, texto_resultado_decimal, acabou, passo_a_passo):
-	global passo_a_passo
 	if not acabou:
 		#Regulariza os números, para facilitar a soma.
 		if len(primeiro_binario) > len(segundo_binario):
@@ -434,7 +432,7 @@ def convert_to_binary(num):
 #Caso a opção "Entrada em binário" esteja selecionada,
 #Verifica se o número inserido está em binário. Depois, "chama" a função para converter em binário.
 #Dependendo do operador escolhido, chama uma das funções para calcular.
-def check_valid(binario):
+def check_valid(binario, passo_a_passo):
     #Verifica se o que foi escrito é um número
     tentar_2 = True
     try:
@@ -531,6 +529,6 @@ choice.configure(width = 2)
 choice.set('+')
 
 #Cria o botão "Calcular".
-calculate = ttk.Button(root, text = 'Calcular', command = lambda : check_valid(False))
+calculate = ttk.Button(root, text = 'Calcular', command = lambda : check_valid(False, passo_a_passo.get()))
 calculate.place(anchor='center', relx=0.5, rely=0.9)
 root.mainloop()
