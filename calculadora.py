@@ -166,8 +166,8 @@ def converter_bcd(numero):
 
 	#Faz a conversão e explica o passo a passo.
     cprint("Para converter o número binário em BCD utilizando portões de lógica, utilizam-se os mapas de Karnaugh para criar o circuito que fará a conversão.", "blue")
-    cprint("(Se você quiser criar circuitos de lógica a partir de tabelas ou mapas de Karnaugh, acesse: https://electricalworkbook.com/binary-to-bcd-code-converter-circuit/)")
-    cprint("\nPrimeiro, é necessário adicionar zeros ao início do número, para que ele fique com 5 dígitos. Desta forma, {0} vira {1}.".format(numero, "".join(lista_numero)))
+    cprint("\n(Se você quiser criar circuitos de lógica a partir de tabelas ou mapas de Karnaugh, acesse: https://electricalworkbook.com/binary-to-bcd-code-converter-circuit/)")
+    cprint("\nPrimeiro, é necessário adicionar zeros ao início do número, para que ele fique com 5 dígitos. Desta forma, {0} vira {1}.".format(numero, "".join(lista_numero)), "red")
     numero = "".join(lista_numero)
     passo()
     cprint("\nPara o primeiro dígito do BCD, o processo é o seguinte: (lembrando que o resultado em binário foi de {})".format(numero), "red")
